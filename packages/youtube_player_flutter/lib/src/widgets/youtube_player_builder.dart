@@ -8,7 +8,7 @@ class YoutubePlayerBuilder extends StatefulWidget {
   /// The actual [YoutubePlayer].
   final YoutubePlayer player;
 
-  final Widget Function(Widget)? wrapper;
+  final Widget Function(Widget, Orientation)? wrapper;
 
   /// Builds the widget below this [builder].
   final Widget Function(BuildContext, Widget) builder;
@@ -81,9 +81,11 @@ class _YoutubePlayerBuilderState extends State<YoutubePlayerBuilder> with Widget
       ),
     );
     final child = widget.builder(context, _player);
-    final player = widget.wrapper?.call(_player) ?? _player;
     return OrientationBuilder(
-      builder: (context, orientation) => orientation == Orientation.portrait ? child : player,
+      builder: (context, orientation) {
+        final player = widget.wrapper?.call(_player, orientation) ?? _player;
+        return orientation == Orientation.portrait ? child : player;
+      },
     );
   }
 }
