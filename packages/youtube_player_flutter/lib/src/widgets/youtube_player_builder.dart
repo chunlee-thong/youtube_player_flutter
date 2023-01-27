@@ -8,6 +8,8 @@ class YoutubePlayerBuilder extends StatefulWidget {
   /// The actual [YoutubePlayer].
   final YoutubePlayer player;
 
+  final Widget Function(Widget)? wrapper;
+
   /// Builds the widget below this [builder].
   final Widget Function(BuildContext, Widget) builder;
 
@@ -24,14 +26,14 @@ class YoutubePlayerBuilder extends StatefulWidget {
     required this.builder,
     this.onEnterFullScreen,
     this.onExitFullScreen,
+    this.wrapper,
   }) : super(key: key);
 
   @override
   _YoutubePlayerBuilderState createState() => _YoutubePlayerBuilderState();
 }
 
-class _YoutubePlayerBuilderState extends State<YoutubePlayerBuilder>
-    with WidgetsBindingObserver {
+class _YoutubePlayerBuilderState extends State<YoutubePlayerBuilder> with WidgetsBindingObserver {
   final GlobalKey playerKey = GlobalKey();
 
   @override
@@ -79,9 +81,9 @@ class _YoutubePlayerBuilderState extends State<YoutubePlayerBuilder>
       ),
     );
     final child = widget.builder(context, _player);
+    final player = widget.wrapper?.call(_player) ?? _player;
     return OrientationBuilder(
-      builder: (context, orientation) =>
-          orientation == Orientation.portrait ? child : _player,
+      builder: (context, orientation) => orientation == Orientation.portrait ? child : player,
     );
   }
 }
